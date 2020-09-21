@@ -103,6 +103,10 @@ namespace jacdac {
             return null
         }
 
+        get arenaBytes() {
+            return 0
+        }
+
         private runModel() {
             if (this.lastError) return
             const numSamples = this.numSamples
@@ -167,7 +171,7 @@ namespace jacdac {
         }
 
         handlePacket(packet: JDPacket) {
-            this.handleRegInt(packet, TFLiteReg.AllocatedArenaSize, tf.arenaBytes())
+            this.handleRegInt(packet, TFLiteReg.AllocatedArenaSize, this.arenaBytes)
             this.handleRegInt(packet, TFLiteReg.LastRunTime, this.execTime)
             this.handleRegInt(packet, TFLiteReg.ModelSize, this.modelSize)
             this.handleRegBuffer(packet, TFLiteReg.Outputs, this.outputs)
