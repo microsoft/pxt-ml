@@ -1,0 +1,29 @@
+{
+    "name": "ml",
+    "version": "0.0.1",
+    "description": "Base classes for ML models in MakeCode - beta",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "shims.d.ts",
+        "mljacdac.ts",
+        "binstore.cpp",
+        "binstore.ts"
+    ],
+    "codal": {
+        "libraries": [
+            "https://github.com/mmoskal/codal-tensorflow#master"
+        ]
+    },
+    "fileDependencies": {
+        "mljacdac.ts": "jacdac-services"
+    },
+    "public": true,
+    "supportedTargets": [
+        "arcade",
+        "maker"
+    ],
+    "preferredEditor": "tsprj"
+}
