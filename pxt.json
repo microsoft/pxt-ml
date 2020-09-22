@@ -1,6 +1,6 @@
 {
     "name": "ml",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Base classes for ML models in MakeCode - beta",
     "dependencies": {
         "core": "*"
