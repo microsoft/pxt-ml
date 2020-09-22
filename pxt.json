@@ -1,6 +1,6 @@
 {
     "name": "ml",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Base classes for ML models in MakeCode - beta",
     "dependencies": {
         "core": "*"
@@ -20,5 +20,6 @@
         "arcade",
         "maker"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "tsprj",
+    "binaryonly": true
 }
