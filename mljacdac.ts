@@ -6,6 +6,7 @@ namespace jacdac {
     export enum ModelRunnerModelFormat { // uint32_t
         TFLite = 0x334c4654,
         ML4F = 0x30470f62,
+        EdgeImpulseCompiled = 0x30564945,
     }
 
     export enum ModelRunnerCmd {
@@ -160,6 +161,10 @@ namespace jacdac {
             this.loadModelImpl()
         }
 
+        protected transformFirstBlockOfModel(buf: Buffer) {
+            return buf
+        }
+
         private readModel(packet: JDPacket) {
             const sz = packet.intData
             console.log(`model ${sz} bytes (of ${binstore.totalSize()})`)
@@ -172,30 +177,39 @@ namespace jacdac {
             console.log(`pipe ${pipe.port}`)
             let off = 0
             const headBuffer = Buffer.create(8)
-            while (true) {
-                const buf = pipe.read()
-                if (!buf)
-                    return
-                if (off == 0) {
-                    // don't write the header before we finish
-                    headBuffer.write(0, buf)
-                    binstore.write(flash, 8, buf.slice(8))
-                } else {
-                    binstore.write(flash, off, buf)
+            this.lastError = null
+            try {
+                while (true) {
+                    let buf = pipe.read()
+                    if (!buf)
+                        return
+                    if (off == 0) {
+                        buf = this.transformFirstBlockOfModel(buf)
+                        // don't write the header before we finish
+                        headBuffer.write(0, buf)
+                        binstore.write(flash, 8, buf.slice(8))
+                    } else {
+                        binstore.write(flash, off, buf)
+                    }
+                    off += buf.length
+                    if (off >= sz) {
+                        // now that we're done, write the header
+                        binstore.write(flash, 0, headBuffer)
+                        // and reset, so we're sure the GC heap is not fragmented when we allocate new arena
+                        //control.reset()
+                        break
+                    }
+                    if (off & 7)
+                        throw "invalid model stream size"
                 }
-                off += buf.length
-                if (off >= sz) {
-                    // now that we're done, write the header
-                    binstore.write(flash, 0, headBuffer)
-                    // and reset, so we're sure the GC heap is not fragmented when we allocate new arena
-                    //control.reset()
-                    break
-                }
-                if (off & 7)
-                    throw "invalid model stream size"
+            } catch (e) {
+                if (typeof e == "string")
+                    this.lastError = e
+                control.dmesgValue(e)
             }
             pipe.close()
-            this.loadModel()
+            if (!this.lastError)
+                this.loadModel()
         }
 
         handlePacket(packet: JDPacket) {
