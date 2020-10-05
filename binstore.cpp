@@ -24,9 +24,9 @@ uint32_t totalSize() {
  */
 //%
 uint32_t dataAddress() {
-    BoxedBuffer start = settings::largeStoreStart();
+    uintptr_t start = settings::largeStoreStart();
     if (start)
-        return (BoxedBuffer) & ((BoxedBuffer *)start)->data;
+        return (uintptr_t) & ((BoxedBuffer *)start)->data;
     return 0;
 }
 
