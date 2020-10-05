@@ -8,6 +8,12 @@ declare namespace binstore {
     function totalSize(): uint32;
 
     /**
+     * Returns the address of data of the first buffer (or 0 if not available).
+     */
+    //% shim=binstore::dataAddress
+    function dataAddress(): uint32;
+
+    /**
      * Clear storage.
      */
     //% shim=binstore::erase

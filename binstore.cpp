@@ -20,6 +20,17 @@ uint32_t totalSize() {
 }
 
 /**
+ * Returns the address of data of the first buffer (or 0 if not available).
+ */
+//%
+uint32_t dataAddress() {
+    BoxedBuffer start = settings::largeStoreStart();
+    if (start)
+        return (BoxedBuffer) & ((BoxedBuffer *)start)->data;
+    return 0;
+}
+
+/**
  * Clear storage.
  */
 //%
