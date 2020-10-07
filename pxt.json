@@ -8,6 +8,7 @@
     "files": [
         "README.md",
         "shims.d.ts",
+        "ml.ts",
         "mljacdac.ts",
         "binstore.cpp",
         "binstore.ts"
