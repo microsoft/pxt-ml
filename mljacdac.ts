@@ -73,14 +73,6 @@ namespace jacdac {
         Parallel = 0x188,
     }
 
-    export function packArray(arr: number[], fmt: NumberFormat) {
-        const sz = Buffer.sizeOfNumberFormat(fmt)
-        const res = Buffer.create(arr.length * sz)
-        for (let i = 0; i < arr.length; ++i)
-            res.setNumber(fmt, i * sz, arr[i])
-        return res
-    }
-
     export class MLHost extends Host {
         protected autoInvokeSamples = 0
         protected execTime = 0
@@ -136,6 +128,20 @@ namespace jacdac {
             return 0
         }
 
+        protected error(msg: string) {
+            if (msg)
+                control.dmesg("ML-error: " + msg)
+            this.lastError = msg
+        }
+
+        protected catchHandler(err: any) {
+            if (typeof err != "string") {
+                control.dmesgValue(err)
+                err = "[dmesg above]"
+            }
+            this.error(err)
+        }
+
         private runModel() {
             if (this.lastError) return
             const numSamples = this.numSamples
@@ -154,11 +160,29 @@ namespace jacdac {
 
         private loadModel() {
             this.lastError = null
-            if (!this.modelBuffer) {
-                this.lastError = "no model"
+            if (!this.modelBuffer)
+                return this.error("no model")
+            this.loadModelImpl()
+            if (this.lastError) {
+                this.agg.samplesInWindow = 0
                 return
             }
-            this.loadModelImpl()
+            let inp = this.inputShape
+            if (inp) {
+                inp = this.inputShape.filter(v => v != 1)
+                const ss = this.agg.sampleSize >> 2
+                let win = 0
+                if (ss == 1)
+                    win = ml.shapeElements(inp)
+                else {
+                    if (inp[inp.length - 1] != ss)
+                        this.error(`shape suggests sample size ${inp[inp.length - 1]}; aggregator has ${ss}`)
+                    else
+                        win = ml.shapeElements(inp.slice(0, inp.length - 1))
+                }
+                control.dmesg(`set sample window to: ${win}`)
+                this.agg.samplesInWindow = win
+            }
         }
 
         protected transformFirstBlockOfModel(buf: Buffer) {
@@ -203,9 +227,7 @@ namespace jacdac {
                         throw "invalid model stream size"
                 }
             } catch (e) {
-                if (typeof e == "string")
-                    this.lastError = e
-                control.dmesgValue(e)
+                this.catchHandler(e)
             }
             pipe.close()
             if (!this.lastError)
@@ -231,7 +253,7 @@ namespace jacdac {
                     arr = this.outputShape
                 case ModelRunnerReg.InputShape | CMD_GET_REG:
                     arr = arr || this.inputShape
-                    this.sendReport(JDPacket.from(packet.service_command, packArray(arr, NumberFormat.UInt16LE)))
+                    this.sendReport(JDPacket.from(packet.service_command, ml.packArray(arr, NumberFormat.UInt16LE)))
                     break;
                 case ModelRunnerReg.LastError | CMD_GET_REG:
                     this.sendReport(JDPacket.from(packet.service_command, Buffer.fromUTF8(this.lastError || "")))
