@@ -171,14 +171,11 @@ namespace jacdac {
             if (inp) {
                 inp = this.inputShape.filter(v => v != 1)
                 const ss = this.agg.sampleSize >> 2
-                let win = 0
-                if (ss == 1)
-                    win = ml.shapeElements(inp)
-                else {
-                    if (inp[inp.length - 1] != ss)
-                        this.error(`shape suggests sample size ${inp[inp.length - 1]}; aggregator has ${ss}`)
-                    else
-                        win = ml.shapeElements(inp.slice(0, inp.length - 1))
+                const elts = ml.shapeElements(inp)
+                let win = Math.idiv(elts, ss)
+                if (ss * win != elts) {
+                    this.error(`aggregator sample size: ${ss} doesn't divide input size ${elts}`)
+                    win = 0
                 }
                 control.dmesg(`set sample window to: ${win}`)
                 this.agg.samplesInWindow = win
