@@ -62,7 +62,7 @@ RefCollection *buffers() {
         uintptr_t end = p + settings::largeStoreSize();
         for (;;) {
             BoxedBuffer *buf = (BoxedBuffer *)p;
-            if (buf->vtable != (uint32_t)&pxt::buffer_vt)
+            if (buf->vtable != &pxt::buffer_vt)
                 break;
             res->head.push((TValue)buf);
             p += (8 + buf->length + 7) & ~7;
@@ -88,7 +88,7 @@ Buffer addBuffer(uint32_t size) {
     uintptr_t end = p + settings::largeStoreSize();
     for (;;) {
         buf = (BoxedBuffer *)p;
-        if (buf->vtable != (uint32_t)&pxt::buffer_vt)
+        if (buf->vtable != &pxt::buffer_vt)
             break;
         p += (8 + buf->length + 7) & ~7;
         if (p >= end)

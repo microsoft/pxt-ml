@@ -1,5 +1,5 @@
 namespace jacdac {
-    export class MLHost extends Host {
+    export class MLServer extends Server {
         protected autoInvokeSamples = 0
         protected execTime = 0
         protected outputs = Buffer.create(0)
@@ -7,8 +7,8 @@ namespace jacdac {
         protected lastRunNumSamples = 0
         protected formatVersion = 0
 
-        constructor(nam: string, protected format: number, protected agg: SensorAggregatorHost) {
-            super(nam, jd_class.MODEL_RUNNER);
+        constructor(nam: string, protected format: number, protected agg: SensorAggregatorServer) {
+            super(nam, jacdac.SRV_MODEL_RUNNER);
             agg.newDataCallback = () => {
                 if (this.autoInvokeSamples && this.lastRunNumSamples >= 0 &&
                     this.numSamples - this.lastRunNumSamples >= this.autoInvokeSamples) {
@@ -120,7 +120,7 @@ namespace jacdac {
             this.eraseModel()
             const flash = binstore.addBuffer(sz)
             const pipe = new InPipe()
-            this.sendReport(JDPacket.packed(packet.service_command, "H", [pipe.port]))
+            this.sendReport(JDPacket.jdpacked(packet.serviceCommand, "u16", [pipe.port]))
             console.log(`pipe ${pipe.port}`)
             let off = 0
             const headBuffer = Buffer.create(8)
@@ -158,17 +158,17 @@ namespace jacdac {
         }
 
         handlePacket(packet: JDPacket) {
-            this.handleRegInt(packet, ModelRunnerReg.AllocatedArenaSize, this.arenaBytes)
-            this.handleRegInt(packet, ModelRunnerReg.LastRunTime, this.execTime)
-            this.handleRegInt(packet, ModelRunnerReg.ModelSize, this.modelSize)
-            this.handleRegInt(packet, ModelRunnerReg.Format, this.format)
-            this.handleRegInt(packet, ModelRunnerReg.FormatVersion, this.formatVersion)
+            this.handleRegUInt32(packet, ModelRunnerReg.AllocatedArenaSize, this.arenaBytes)
+            this.handleRegUInt32(packet, ModelRunnerReg.LastRunTime, this.execTime)
+            this.handleRegUInt32(packet, ModelRunnerReg.ModelSize, this.modelSize)
+            this.handleRegUInt32(packet, ModelRunnerReg.Format, this.format)
+            this.handleRegUInt32(packet, ModelRunnerReg.FormatVersion, this.formatVersion)
             this.handleRegBool(packet, ModelRunnerReg.Parallel, false)
             this.handleRegBuffer(packet, ModelRunnerReg.Outputs, this.outputs)
-            this.autoInvokeSamples = this.handleRegInt(packet, ModelRunnerReg.AutoInvokeEvery, this.autoInvokeSamples)
+            this.autoInvokeSamples = this.handleRegValue(packet, ModelRunnerReg.AutoInvokeEvery, "u16", this.autoInvokeSamples)
 
             let arr: number[]
-            switch (packet.service_command) {
+            switch (packet.serviceCommand) {
                 case ModelRunnerCmd.SetModel:
                     control.runInBackground(() => this.readModel(packet))
                     break
@@ -176,10 +176,10 @@ namespace jacdac {
                     arr = this.outputShape
                 case ModelRunnerReg.InputShape | CMD_GET_REG:
                     arr = arr || this.inputShape
-                    this.sendReport(JDPacket.from(packet.service_command, ml.packArray(arr, NumberFormat.UInt16LE)))
+                    this.sendReport(JDPacket.from(packet.serviceCommand, ml.packArray(arr, NumberFormat.UInt16LE)))
                     break;
                 case ModelRunnerReg.LastError | CMD_GET_REG:
-                    this.sendReport(JDPacket.from(packet.service_command, Buffer.fromUTF8(this.lastError || "")))
+                    this.sendReport(JDPacket.from(packet.serviceCommand, Buffer.fromUTF8(this.lastError || "")))
                     break
                 default:
                     break;

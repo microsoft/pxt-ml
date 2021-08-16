@@ -14,7 +14,7 @@
         "binstore.ts"
     ],
     "fileDependencies": {
-        "mljacdac.ts": "jacdac-services"
+        "mljacdac.ts": "jacdac"
     },
     "public": true,
     "supportedTargets": [
