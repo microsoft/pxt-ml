@@ -62,8 +62,8 @@ namespace jacdac {
 
         protected catchHandler(err: any) {
             if (typeof err != "string") {
-                control.dmesgValue(err)
-                err = "[dmesg above]"
+                // control.dmesgValue(err) - missing on micro:bit
+                err = err + ""
             }
             this.error(err)
         }
