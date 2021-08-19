@@ -1,6 +1,6 @@
 {
     "name": "ml4f",
-    "version": "0.0.6",
+    "version": "0.1.1",
     "description": "Run compiled ML models in MakeCode - beta",
     "dependencies": {
         "ml": "github:microsoft/pxt-ml",
@@ -10,7 +10,7 @@
         "jacdac-sensor-aggregator": "github:microsoft/pxt-jacdac/sensor-aggregator#v0.5.2"
     },
     "files": [
-      "main.ts"
+        "main.ts"
     ],
     "public": true,
     "supportedTargets": [
