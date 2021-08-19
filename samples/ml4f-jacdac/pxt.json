@@ -3,8 +3,8 @@
     "version": "0.0.6",
     "description": "Run compiled ML models in MakeCode - beta",
     "dependencies": {
-        "ml": "github:microsoft/pxt-ml#v0.0.11",
-        "ml4f": "github:microsoft/pxt-ml/ml4f#v0.0.11",
+        "ml": "github:microsoft/pxt-ml",
+        "ml4f": "github:microsoft/pxt-ml/ml4f",
         "jacdac": "github:microsoft/pxt-jacdac#v0.5.2",
         "jacdac-model-runner": "github:microsoft/pxt-jacdac/model-runner#v0.5.2",
         "jacdac-sensor-aggregator": "github:microsoft/pxt-jacdac/sensor-aggregator#v0.5.2"
