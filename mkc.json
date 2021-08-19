@@ -1,7 +1,7 @@
 {
-    "targetWebsite": "https://makecode.microbit.org/beta",
-    "links": {
-      "ml": ".",
-      "ml4f": "./ml4f"
-    }
+  "targetWebsite": "https://makecode.microbit.org/beta",
+  "links": {
+    "ml": ".",
+    "ml4f": "./ml4f"
+  }
 }

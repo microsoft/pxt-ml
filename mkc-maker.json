@@ -1,0 +1,8 @@
+{
+    "targetWebsite": "https://maker.makecode.com",
+    "hwVariant": "nucleo-f411re",
+    "links": {
+        "ml": ".",
+        "ml4f": "./ml4f"
+    }
+}
