@@ -1,0 +1,46 @@
+{
+    "name": "ml4f",
+    "version": "0.0.6",
+    "description": "Run compiled ML models in MakeCode - beta",
+    "dependencies": {
+        "ml": "github:microsoft/pxt-ml#v0.0.11"
+    },
+    "files": [
+        "README.md",
+        "ml4f.cpp",
+        "ml4f.ts",
+        "ml4fjacdac.ts",
+        "ns.ts"
+    ],
+    "fileDependencies": {
+        "ml4fjacdac.ts": "jacdac"
+    },
+    "x-testDependencies": {
+        "core": "*",
+        "settings": "*",
+        "jacdac": "github:microsoft/pxt-jacdac#v0.5.1",
+        "jacdac-model-runner": "github:microsoft/pxt-jacdac/model-runner#v0.5.1",
+        "jacdac-sensor-aggregator": "github:microsoft/pxt-jacdac/sensor-aggregator#v0.5.1"
+    },
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true,
+    "supportedTargets": [
+        "arcade",
+        "maker",
+        "microbit"
+    ],
+    "disablesVariants": [
+        "mbdal"
+    ],
+    "preferredEditor": "tsprj",
+    "binaryonly": true,
+    "extension": {
+        "namespace": "ml",
+        "label": "Import Model",
+        "group": "Services",
+        "url": "https://microsoft.github.io/ml4f/",
+        "localUrl": "http://localhost:8080/pxt"
+    }
+}
