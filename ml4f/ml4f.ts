@@ -1,6 +1,10 @@
 namespace ml4f {
     //% shim=ml4f::_invokeModel
-    declare function _invoke(model: Buffer, arena: Buffer): void;
+    function _invoke(model: Buffer, arena: Buffer): void
+    {
+        // missing in sim
+        return
+    }
 
     const eps = 0.00002
     function isNear(a: number, b: number) {
