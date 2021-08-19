@@ -49,10 +49,11 @@ namespace ml {
         private processOutput(output: Buffer) {
             const prevClass = this.currentClass
             const now = control.millis()
+            // control.dmesg(now + "ms: " + JSON.stringify(output.toArray(NumberFormat.Float32LE)))
             for (let i = 0; i < output.length; i += 4) {
                 const v = output.getNumber(NumberFormat.Float32LE, i)
                 if (v > this.detectionThreshold) {
-                    this.currentClass = i
+                    this.currentClass = i >> 2
                     if (this.currentClass != this.noiseClassNo) {
                         this.lastNonNoiseClass = this.currentClass
                         this.lastNonNoiseTime = now
@@ -99,7 +100,7 @@ namespace ml {
         start() {
             if (this.inputBuffer)
                 return
-            const input = Buffer.create(this.elementsInSample * this.samplesInWindow)
+            const input = Buffer.create(4 * this.elementsInSample * this.samplesInWindow)
             this.inputBuffer = input
             control.runInBackground(() => this.sampleLoop(input))
         }
