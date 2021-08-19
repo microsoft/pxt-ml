@@ -3,7 +3,8 @@
     "version": "0.0.10",
     "description": "Base classes for ML models in MakeCode - beta",
     "dependencies": {
-        "core": "*"
+        "core": "*",
+        "settings": "*"
     },
     "files": [
         "README.md",
@@ -19,7 +20,11 @@
     "public": true,
     "supportedTargets": [
         "arcade",
-        "maker"
+        "maker",
+        "microbit"
+    ],
+    "disablesVariants": [
+        "mbdal"
     ],
     "preferredEditor": "tsprj",
     "binaryonly": true
