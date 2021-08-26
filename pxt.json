@@ -1,7 +1,7 @@
 {
     "name": "ml",
     "version": "0.1.2",
-    "description": "Base classes for ML models in MakeCode - beta",
+    "description": "Run compiled ML models in MakeCode - beta",
     "dependencies": {
         "core": "*",
         "settings": "*"
@@ -12,9 +12,14 @@
         "ml.ts",
         "mljacdac.ts",
         "binstore.cpp",
-        "binstore.ts"
+        "binstore.ts",
+        "ml4f.cpp",
+        "ml4f.ts",
+        "ml4fjacdac.ts",
+        "ns.ts"
     ],
     "fileDependencies": {
+        "ml4fjacdac.ts": "jacdac",
         "mljacdac.ts": "jacdac"
     },
     "public": true,
@@ -27,5 +32,12 @@
         "mbdal"
     ],
     "preferredEditor": "tsprj",
-    "binaryonly": true
+    "binaryonly": true,
+    "extension": {
+        "namespace": "ml",
+        "label": "Import Model",
+        "group": "Services",
+        "url": "https://microsoft.github.io/ml4f/",
+        "localUrl": "http://localhost:8080/pxt"
+    }
 }
